@@ -24,8 +24,9 @@ namespace Nexus {
             _coros = coro;
         }
 
-        void addTask(Task *task)
+        void addTask(Task *task, Task *parent = NULL)
         {
+            task->_parent = parent;
             task->_next = _tasks;
 
             _tasks = task;

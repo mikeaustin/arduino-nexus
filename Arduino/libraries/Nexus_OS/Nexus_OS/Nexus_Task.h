@@ -6,7 +6,11 @@
 #define __Nexus_Task__
 
 #include <Arduino.h>
-#include <limits.h>
+#include <stdint.h>
+
+#ifndef INT32_MAX
+#define INT32_MAX 0x7FFFFFFF
+#endif
 
 #define MERGE_LINE(line) label_##line
 #define LABEL_LINE(line) MERGE_LINE(line)
@@ -18,7 +22,7 @@
 #define task_enter        coro_enter
 #define task_sleep(msecs) _timeout = millis() + msecs; _sleep = true; coro_yield()
 #define task_yield()      _timeout = 0; _sleep = false; coro_yield()
-#define task_wait()       _timeout = LONG_MAX; _sleep = false; coro_yield()
+#define task_wait()       _timeout = INT32_MAX; _sleep = false; coro_yield()
 #define task_wait4(msecs)       _timeout = millis() + msecs; _sleep = false; coro_yield()
 #define task_exit         coro_exit
 
@@ -48,6 +52,7 @@ namespace Nexus {
 
         void *_context;
         Coro *_next;
+        Coro *_parent;
 
     };
 
@@ -73,6 +78,8 @@ namespace Nexus {
 
     */
 
+    class Terminal;
+
     class Task : public Coro {
 
       public:
@@ -85,7 +92,11 @@ namespace Nexus {
 
         void send(const Message& message);
 
-        Task* getNext() { return static_cast<Task*>(Coro::getNext()); }
+        Task* getNext() { return static_cast<Task *>(Coro::getNext()); }
+        Task* getParent() { return static_cast<Task *>(Coro::getNext()); }
+
+        Terminal *getTerminal();
+        Stream& getStream();
 
       protected:
 

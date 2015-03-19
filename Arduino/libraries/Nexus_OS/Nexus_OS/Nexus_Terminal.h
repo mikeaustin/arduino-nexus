@@ -16,11 +16,11 @@ namespace Nexus {
 
         enum Key
         {
-            None = 256, KeyEnter, KeyDelete, KeyEscape,
-            KeyUp, KeyDown, KeyLeft, KeyRight
+            KeyEnter = 10, KeyDelete = 8, KeyEscape = 27,
+            KeyUp = 30, KeyDown = 31, KeyLeft = 28, KeyRight = 29
         };
 
-        KeyEvent(int key = None) : key(key) { }
+        KeyEvent(int key = 0) : key(key) { }
 
         int key;
 
@@ -31,36 +31,47 @@ namespace Nexus {
       public:
 
         Terminal(Stream& stream) : Task(&TaskHelper<Terminal>::run, F("Terminal")),
-          _stream(stream)
+          _stream(stream), _task(NULL)
         { }
+
+        void setForegroundTask(Task *foregroundTask)
+        {
+            _task = foregroundTask;
+        }
+
+        Stream& getStream() { return _stream; }
 
         void run(const Message& message)
         {
-            //StreamEvent streamEvent;
+            int c, key;
 
             task_enter;
 
             for (;;)
             {
-                int key;
-
                 task_wait();
 
-                int c = _stream.read();
+                c = _stream.read();
 
+                if (c == 13) continue;
+
+                if (c == 10)
+                {
+                    key = KeyEvent::KeyEnter;
+                }
                 if (c == 27)
                 {
                     task_wait4(10);
 
                     if (message.get<StreamEvent>())
                     {
-                        int c = _stream.read();
+                        c = _stream.read();
 
                         if (c == '[')
                         {
                             task_wait();
 
-                            int c = _stream.read();
+                            c = _stream.read();
 
                             switch (c)
                             {
@@ -75,8 +86,7 @@ namespace Nexus {
                 }
                 else key = c;
 
-                Serial.println(key);
-                Message(KeyEvent(key));
+                if (_task) _task->send(Message(KeyEvent(key)));
             }
 
             task_exit;

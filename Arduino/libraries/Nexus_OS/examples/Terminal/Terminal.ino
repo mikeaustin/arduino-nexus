@@ -6,14 +6,16 @@
 
 using namespace Nexus;
 
-class Blink : public Task {
+class Client : public Task {
 
   public:
 
-    Blink() : Task(&TaskHelper<Blink>::run, F("Blink")) { }
+    Client() : Task(&TaskHelper<Client>::run, F("Client")) { }
 
     void run(const Message& message)
     {
+        KeyEvent keyEvent;
+
         task_enter;
 
         pinMode(13, OUTPUT);
@@ -22,19 +24,26 @@ class Blink : public Task {
         {
             task_wait();
 
+            if (keyEvent = message.get<KeyEvent>())
+            {
+                switch (keyEvent.key)
+                {
+                    case KeyEvent::KeyEscape: getStream().print(F("<ESC>")); break;
+                    case KeyEvent::KeyUp:     getStream().print(F("<UP>")); break;
+                    case KeyEvent::KeyDown:   getStream().print(F("<DOWN>")); break;
+                    case KeyEvent::KeyLeft:   getStream().print(F("<LEFT>")); break;
+                    case KeyEvent::KeyRight:  getStream().print(F("<RIGHT>")); break;
+                    default:                  getStream().print((char)keyEvent.key);
+                }
+            }
         }
 
         task_exit;
     }
 
-  private:
-
-    uint8_t i;
-
 };
 
-Terminal terminal(Serial);
-//Blink blink;
+Terminal console(Serial);
 
 namespace {
 
@@ -42,23 +51,27 @@ namespace {
     {
         if (Serial.available() > 0)
         {
-            terminal.send(Message(StreamEvent(Serial)));
+            console.send(Message(StreamEvent(Serial)));
         }
     }
 
 }
 
 Coro messenger = Coro(&stream);
+Client client = Client();
 
 void setup()
 {
     Serial.begin(9600);
 
-    Serial.println("Arduino OS 0.1 | 2015 Mike Austin");
+    Serial.println(F("Type. And try the arrow keys and escape."));
 
     Scheduler.addCoro(&messenger);
-    //Scheduler.addTask(&blink);
-    Scheduler.addTask(&terminal);
+
+    Scheduler.addTask(&console, NULL);
+    Scheduler.addTask(&client, &console);
+
+    console.setForegroundTask(&client);
 }
 
 void loop()

@@ -11,4 +11,19 @@ namespace Nexus {
         Scheduler.send(*this, message);
     }
 
+    Terminal *Task::getTerminal()
+    {
+        for (Task *task = Scheduler.getTasks(); task != NULL; task = task->getParent())
+        {
+            if (task->getParent() == NULL) return static_cast<Terminal *>(task);
+        }
+
+        return NULL;
+    }
+
+    Stream& Task::getStream()
+    {
+        return getTerminal()->getStream();
+    }
+
 }

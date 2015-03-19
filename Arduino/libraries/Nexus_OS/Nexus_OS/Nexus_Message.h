@@ -4,12 +4,24 @@
 
 namespace Nexus {
 
+    /**
+
+    Proviedes run time type information , used by messages and events
+
+    */
+
     template<typename Type>
     struct TypeInfo {
 
         static void *GetType() { return reinterpret_cast<void *>(&GetType); }
 
     };
+
+    /**
+
+    An encapsulated option data type, passed to tasks via messages
+
+    */
     
     class Event {
 
@@ -25,6 +37,12 @@ namespace Nexus {
         bool _valid;
 
     };
+
+    /*
+
+    Used to synchronously send data between tasks or the scheduler
+
+    */
 
     class Message {
 
