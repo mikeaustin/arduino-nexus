@@ -47,7 +47,7 @@ namespace Nexus {
         //         _tasks = newTask;
         // }
 
-        Task* getTasks() { return _tasks; }
+        Task *getTasks() { return _tasks; }
 
         void send(Task& task, const Message& message)
         {
@@ -82,7 +82,7 @@ namespace Nexus {
                     else
                         _tasks = (Task *)task->_next;
 
-                    task = prev;
+                    if (prev) task = prev;
                 }
                 else prev = task;
             }

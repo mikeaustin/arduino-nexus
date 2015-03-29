@@ -22,16 +22,18 @@ class Blink : public Task {
         {
             task_wait();
 
+            Serial.println(F("Blinking..."));
+
             for (i = 0; i < 5; ++i)
             {
                 digitalWrite(13, HIGH);
-
                 task_sleep(500);
 
                 digitalWrite(13, LOW);
-
                 task_sleep(500);
             }
+
+            Serial.println(F("Done."));
         }
 
         task_exit;
@@ -64,6 +66,8 @@ Coro messenger = Coro(&stream);
 void setup()
 {
     Serial.begin(9600);
+
+    Serial.println(F("Press enter to start blinking."));
 
     Scheduler.addCoro(&messenger);
     Scheduler.addTask(&blink);

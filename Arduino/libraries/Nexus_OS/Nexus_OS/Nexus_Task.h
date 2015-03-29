@@ -95,8 +95,17 @@ namespace Nexus {
         Task* getNext() { return static_cast<Task *>(Coro::getNext()); }
         Task* getParent() { return static_cast<Task *>(Coro::getNext()); }
 
+        symbol getName() { return _name; }
+
         Terminal *getTerminal();
         Stream& getStream();
+
+        template<typename T1, typename T2>
+        void println(T1 arg1, T2 arg2) {
+            getStream().print(arg1);
+            getStream().print(arg2);
+            getStream().print('\n');
+        }
 
       protected:
 

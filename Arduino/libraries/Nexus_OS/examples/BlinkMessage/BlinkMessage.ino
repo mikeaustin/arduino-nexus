@@ -21,11 +21,9 @@ class LED : public Task {
         for (;;)
         {
             task_wait();
-
             digitalWrite(13, HIGH);
 
             task_wait();
-
             digitalWrite(13, LOW);
         }
 
@@ -46,14 +44,12 @@ class Blink : public Task, TaskHelper<Blink> {
     {
         task_enter;
 
-        for (i = 0; i < 5; ++i)
+        for (;;)
         {
-            led->send(Message());
-
+            led->send(Message(Event()));
             task_sleep(500);
 
-            led->send(Message());
-
+            led->send(Message(Event()));
             task_sleep(500);
         }
 
@@ -63,7 +59,6 @@ class Blink : public Task, TaskHelper<Blink> {
   private:
 
     Task    *led;
-    uint8_t  i;
 
 };
 
@@ -72,8 +67,6 @@ Blink blink(&led);
 
 void setup()
 {
-    Serial.begin(9600);
-
     Scheduler.addTask(&blink);
     Scheduler.addTask(&led);
 }

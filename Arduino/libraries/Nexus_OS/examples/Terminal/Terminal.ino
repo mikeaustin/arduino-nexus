@@ -1,5 +1,5 @@
 //
-// BlinkSerialCoro.ino
+// Terminal.ino
 //
 
 #include <Nexus_OS.h>
@@ -64,7 +64,7 @@ void setup()
 {
     Serial.begin(9600);
 
-    Serial.println(F("Type. And try the arrow keys and escape."));
+    Serial.println(F("Type stuff. And try the arrow keys and escape key."));
 
     Scheduler.addCoro(&messenger);
 

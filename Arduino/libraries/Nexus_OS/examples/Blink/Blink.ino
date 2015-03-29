@@ -18,10 +18,9 @@ class Blink : public Task {
 
         pinMode(13, OUTPUT);
 
-        for (i = 0; i < 5; ++i)
+        for (;;)
         {
             digitalWrite(13, HIGH);
-
             task_sleep(500);
 
             digitalWrite(13, LOW);
@@ -31,16 +30,10 @@ class Blink : public Task {
         task_exit;
     }
 
-  private:
-
-    uint8_t i;
-
 };
 
 void setup()
 {
-    Serial.begin(9600);
-
     Scheduler.addTask(new Blink());
 }
 
