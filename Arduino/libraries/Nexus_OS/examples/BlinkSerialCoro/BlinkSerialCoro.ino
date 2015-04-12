@@ -49,13 +49,13 @@ Blink blink;
 
 namespace {
 
-    void stream(Coro& coro, const Message& message)
+    void stream(Coro *coro, const Message& message)
     {
         while (Serial.available() > 0)
         {
             Serial.read();
 
-            blink.send(Message(Event()));
+            Scheduler.send(&blink, Message(Event()));
         }
     }
 

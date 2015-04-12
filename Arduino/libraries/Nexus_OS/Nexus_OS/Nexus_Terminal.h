@@ -86,7 +86,7 @@ namespace Nexus {
                 }
                 else key = c;
 
-                if (_task) _task->send(Message(KeyEvent(key)));
+                if (_task) Scheduler.send(_task, Message(KeyEvent(key)));
             }
 
             task_exit;

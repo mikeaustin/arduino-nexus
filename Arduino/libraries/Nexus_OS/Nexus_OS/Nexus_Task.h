@@ -23,8 +23,11 @@
 #define task_sleep(msecs) _timeout = millis() + msecs; _sleep = true; coro_yield()
 #define task_yield()      _timeout = 0; _sleep = false; coro_yield()
 #define task_wait()       _timeout = INT32_MAX; _sleep = false; coro_yield()
-#define task_wait4(msecs)       _timeout = millis() + msecs; _sleep = false; coro_yield()
+#define task_wait4(msecs) _timeout = millis() + msecs; _sleep = false; coro_yield()
 #define task_exit         coro_exit
+
+// Yield before sending a message, so that previous sends can be processed
+#define task_send(task, message) task_yield(); Scheduler.send(task, message)
 
 namespace Nexus {
 
@@ -40,7 +43,7 @@ namespace Nexus {
 
         friend class Scheduler;
 
-        typedef void (*TickFunc)(Coro& coro, const Message& message);
+        typedef void (*TickFunc)(Coro *coro, const Message& message);
 
         Coro(TickFunc run) : _run(run), _context(NULL), _next(NULL) { }
 
@@ -65,9 +68,9 @@ namespace Nexus {
     template<typename T>
     struct TaskHelper {
 
-        static void run(Coro& task, const Message& message)
+        static void run(Coro *task, const Message& message)
         {
-            static_cast<T *>(&task)->run(message);
+            static_cast<T *>(task)->run(message);
         }
 
     };
@@ -90,7 +93,7 @@ namespace Nexus {
           _name(name), _timeout(0), _sleep(false)
         { }
 
-        void send(const Message& message);
+        //void send(const Message& message);
 
         Task* getNext() { return static_cast<Task *>(Coro::getNext()); }
         Task* getParent() { return static_cast<Task *>(Coro::getNext()); }

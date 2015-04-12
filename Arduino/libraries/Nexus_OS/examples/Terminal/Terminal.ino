@@ -47,11 +47,11 @@ Terminal console(Serial);
 
 namespace {
 
-    void stream(Coro& coro, const Message& message)
+    void stream(Coro *coro, const Message& message)
     {
         if (Serial.available() > 0)
         {
-            console.send(Message(StreamEvent(Serial)));
+            Scheduler.send(&console, Message(StreamEvent(Serial)));
         }
     }
 

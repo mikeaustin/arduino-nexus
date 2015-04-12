@@ -49,11 +49,11 @@ namespace Nexus {
 
         Task *getTasks() { return _tasks; }
 
-        void send(Task& task, const Message& message)
+        void send(Task *task, const Message& message)
         {
-            if (!task._sleep)
+            if (!task->_sleep)
             {
-                task._run(task, message);
+                task->_run(task, message);
             }
         }
 
@@ -61,18 +61,14 @@ namespace Nexus {
         {
             for (Coro *prev = NULL, *coro = _coros; coro != NULL; coro = coro->getNext())
             {
-                coro->_run(*coro, Message(Event()));
+                coro->_run(coro, Message(Event()));
             }
 
             for (Task *prev = NULL, *task = _tasks; task != NULL; task = task->getNext())
             {
                 if (msecs >= task->_timeout)
                 {
-                    //TimeoutEvent event;
-
-                    //task->run(Message(event));
-                    //send(*task, Message());
-                    task->_run(*task, Message(Event()));
+                    task->_run(task, Message(Event()));
                 }
 
                 if (task->_context == NULL)
@@ -94,6 +90,8 @@ namespace Nexus {
         Task *_tasks;
 
     };
+
+    extern class Scheduler Scheduler;
 
 }
 

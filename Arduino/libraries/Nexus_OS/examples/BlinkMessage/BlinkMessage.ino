@@ -46,10 +46,10 @@ class Blink : public Task, TaskHelper<Blink> {
 
         for (;;)
         {
-            led->send(Message(Event()));
+            task_send(led, Message(Event()));
             task_sleep(500);
 
-            led->send(Message(Event()));
+            task_send(led, Message(Event()));
             task_sleep(500);
         }
 

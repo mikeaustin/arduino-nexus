@@ -6,10 +6,10 @@
 
 namespace Nexus {
     
-    void Task::send(const Message& message)
-    {
-        Scheduler.send(*this, message);
-    }
+    // void Task::send(const Message& message)
+    // {
+    //     Scheduler.send(this, message);
+    // }
 
     Terminal *Task::getTerminal()
     {

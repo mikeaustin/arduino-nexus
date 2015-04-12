@@ -6,7 +6,7 @@ namespace Nexus {
 
     /**
 
-    Proviedes run time type information , used by messages and events
+    Proviedes run time type information, used by messages and events
 
     */
 
