@@ -14,21 +14,6 @@ struct SqrData : public Event {
 
 };
 
-template<typename T1, typename T2>
-struct tuple2 : public Event {
-    tuple2(T1 _1, T2 _2) : _1(_1), _2(_2) { }
-
-    T1 _1;
-    T2 _2;
-};
-
-struct Void { };
-
-template<typename T1, typename T2>
-tuple2<T1, T2> make_tuple(T1 _1, T2 _2) {
-    return tuple2<T1, T2>(_1, _2);
-}
-
 class Pong : public Task {
 
   public:

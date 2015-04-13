@@ -21,9 +21,28 @@ namespace Nexus {
 
         Buffer() : _index(0) { }
 
-        void push(char c)
+        bool push(char c)
         {
-            _buffer[_index++] = c;
+            if (_index < sizeof(_buffer) - 1)
+            {
+                _buffer[_index++] = c;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        bool pop()
+        {
+            if (_index > 0)
+            {
+                _index--;
+
+                return true;
+            }
+
+            return false;
         }
 
         const char *value()
@@ -31,6 +50,11 @@ namespace Nexus {
             _buffer[_index] = '\0';
 
             return _buffer;
+        }
+
+        size_t size()
+        {
+            return _index;
         }
 
         void reset()
@@ -73,15 +97,25 @@ namespace Nexus {
                     {
                         break; case KeyEvent::KeyEnter:
                         {
-                            getStream().print(F("\n"));
+                            getStream().println(F(""));
 
-                            task = executeCommand(_buffer.value());
+                            if (_buffer.size() > 0)
+                            {
+                                task = executeCommand(_buffer.value());
+                            }
 
                             getStream().print(F("] "));
                         }
+                        break; case KeyEvent::KeyDelete:
+                        {
+                            deleteCharacter();
+                        }
                         break; default:
                         {
-                            insertCharacter(keyEvent.key);
+                            if (keyEvent.key >= 32 && keyEvent.key < 127)
+                            {
+                                insertCharacter(keyEvent.key);
+                            }
                         }
                     }
                 }
@@ -92,9 +126,18 @@ namespace Nexus {
 
         void insertCharacter(char c)
         {
-            _buffer.push(c);
+            if (_buffer.push(c))
+            {
+                getStream().print(c);
+            }
+        }
 
-            getStream().print(c);
+        void deleteCharacter()
+        {
+            if (_buffer.pop())
+            {
+                getStream().print(F("\b \b"));
+            }
         }
 
         CommandThunk findCommand(const char *name)

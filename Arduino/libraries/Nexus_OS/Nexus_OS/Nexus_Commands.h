@@ -24,7 +24,7 @@ namespace Nexus {
     }
     
     inline Stream& endl(Stream& stream) {
-        stream.print('\n');
+        stream.println(F(""));
 
         return stream;
     }
@@ -88,13 +88,6 @@ namespace Nexus {
 
             for (Task *task = Scheduler.getTasks(); task != NULL; task = task->getNext())
             {
-                // stream.print(task->getName());
-
-                // for (int i = 0; i < 16 - task->getName().size(); ++i)
-                //     stream.print(' ');
-
-                // stream.println((intptr_t)task);
-
                 stream << column(task->getName(), 16) << task << endl;
             }
 

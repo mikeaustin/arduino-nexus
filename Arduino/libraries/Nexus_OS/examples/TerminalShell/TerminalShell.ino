@@ -67,7 +67,7 @@ void setup()
 
     Scheduler.addCoro(&messenger);
 
-    Scheduler.addTask(&console, NULL);
+    Scheduler.addTask(&console);
     Scheduler.addTask(&shell, &console);
 
     console.setForegroundTask(&shell);

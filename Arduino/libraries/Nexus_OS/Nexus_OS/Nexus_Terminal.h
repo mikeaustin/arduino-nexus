@@ -53,13 +53,48 @@ namespace Nexus {
 
                 c = _stream.read();
 
-                if (c == 13) continue;
+                // switch (c)
+                // {
+                //     case 8:
+                //     case 127:   key = KeyEvent::KeyDelete;
+                //     case 10:    key = KeyEvent::KeyEnter; break;
+                //     case 13:    continue;
+                //     case 27:    task_wait4(10);
 
-                if (c == 10)
+                //                 if (message.get<StreamEvent>())
+                //                 {
+                //                     c = _stream.read();
+
+                //                     if (c == '[')
+                //                     {
+                //                         task_wait();
+
+                //                         c = _stream.read();
+
+                //                         switch (c)
+                //                         {
+                //                             case 'A': key = KeyEvent::KeyUp; break;
+                //                             case 'B': key = KeyEvent::KeyDown; break;
+                //                             case 'C': key = KeyEvent::KeyRight; break;
+                //                             case 'D': key = KeyEvent::KeyLeft; break;
+                //                         }
+                //                     }
+                //                 } break;
+                //     default:
+                //                 key = c;
+                // }
+
+                if (c == 10) continue;
+
+                if (c == 13)
                 {
                     key = KeyEvent::KeyEnter;
                 }
-                if (c == 27)
+                else if (c == 8 || c == 127)
+                {
+                    key = KeyEvent::KeyDelete;
+                }
+                else if (c == 27)
                 {
                     task_wait4(10);
 
