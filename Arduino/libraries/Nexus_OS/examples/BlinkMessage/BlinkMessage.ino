@@ -10,7 +10,7 @@ class LED : public Task {
 
   public:
 
-    LED() : Task(&TaskHelper<LED>::run, F("LED")) { }
+    LED() : Task(TaskHelper<LED>::run, F("LED")) { }
 
     void run(const Message& message)
     {
@@ -36,7 +36,7 @@ class Blink : public Task, TaskHelper<Blink> {
 
   public:
 
-    Blink(Task *led) : Task(&TaskHelper<Blink>::run, F("Blink")),
+    Blink(Task* led) : Task(TaskHelper<Blink>::run, F("Blink")),
       led(led)
     { }
 
@@ -46,10 +46,10 @@ class Blink : public Task, TaskHelper<Blink> {
 
         for (;;)
         {
-            task_send(led, Message(Event()));
+            led->send(0);
             task_sleep(500);
 
-            task_send(led, Message(Event()));
+            led->send(0);
             task_sleep(500);
         }
 
@@ -58,7 +58,7 @@ class Blink : public Task, TaskHelper<Blink> {
 
   private:
 
-    Task    *led;
+    Task* led;
 
 };
 

@@ -11,7 +11,7 @@ namespace {
     const char ledOn_name[] PROGMEM = "led on";
     const char ledOff_name[] PROGMEM = "led off";
 
-    Task *ledOn(Task *parent)
+    Task* ledOn(Task* parent)
     {
         digitalWrite(13, HIGH);
         parent->getStream().println(F("LED enabled."));
@@ -19,7 +19,7 @@ namespace {
         return NULL;
     }
 
-    Task *ledOff(Task *parent)
+    Task* ledOff(Task* parent)
     {
         digitalWrite(13, LOW);
         parent->getStream().println(F("LED disabled."));
@@ -44,11 +44,11 @@ Shell shell(commands);
 
 namespace {
 
-    void stream(Coro *coro, const Message& message)
+    void stream(Coro* coro, const Message& message)
     {
         if (Serial.available() > 0)
         {
-            Scheduler.send(&console, Message(StreamEvent(Serial)));
+            console.send(Message(StreamEvent::Create(Serial)));
         }
     }
 

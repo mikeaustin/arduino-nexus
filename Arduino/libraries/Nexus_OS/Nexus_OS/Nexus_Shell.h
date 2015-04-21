@@ -4,14 +4,14 @@
 
 namespace Nexus {
 
-    typedef Task *(*CommandThunk)(Task *parent);
+    typedef Task* (*CommandThunk)(Task* parent);
 
     struct Command {
 
         //Command(const char * name, CommandThunk command) : name(name), command(command) { }
 
-        const char   *name;
-        CommandThunk  command;
+        const char*  name;
+        CommandThunk command;
 
     };
 
@@ -73,15 +73,17 @@ namespace Nexus {
 
       public:
 
-        Shell(const Command *commands) : Task(&TaskHelper<Shell>::run, F("Shell")),
+        Shell(const Command* commands) : Task(TaskHelper<Shell>::run, F("Shell")),
           _commands(commands)
         { }
 
-        const Command *getCommands() { return _commands; }
+        const Command* getCommands() { return _commands; }
 
         void run(const Message& message)
         {
-            KeyEvent keyEvent; Task *task;
+            option<KeyEvent> keyEvent;
+
+            Task* task;
 
             task_enter;
 
@@ -93,7 +95,7 @@ namespace Nexus {
 
                 if (keyEvent = message.get<KeyEvent>())
                 {
-                    switch (keyEvent.key)
+                    switch (keyEvent->key)
                     {
                         break; case KeyEvent::KeyEnter:
                         {
@@ -112,9 +114,9 @@ namespace Nexus {
                         }
                         break; default:
                         {
-                            if (keyEvent.key >= 32 && keyEvent.key < 127)
+                            if (keyEvent->key >= 32 && keyEvent->key < 127)
                             {
-                                insertCharacter(keyEvent.key);
+                                insertCharacter(keyEvent->key);
                             }
                         }
                     }
@@ -140,13 +142,13 @@ namespace Nexus {
             }
         }
 
-        CommandThunk findCommand(const char *name)
+        CommandThunk findCommand(const char* name)
         {
-            for (const Command *command = _commands; pgm_ptr<void *>(command->name) != NULL; ++command)
+            for (const Command* command = _commands; pgm_ptr<void*>(command->name) != NULL; ++command)
             {
                 //const char *commandName = (const char *)pgm_read_word(&command->name);
-                const char *commandName = pgm_ptr<const char *>(command->name);
-                const symbol commandName2 = pgm_ptr<const __FlashStringHelper *>(command->name);
+                const char* commandName = pgm_ptr<const char*>(command->name);
+                const symbol commandName2 = pgm_ptr<const __FlashStringHelper*>(command->name);
                 const CommandThunk thunk = (CommandThunk)pgm_read_word(&command->command);
 
                 if (commandName2 == name) return thunk;
@@ -158,9 +160,9 @@ namespace Nexus {
             return NULL;
         }
 
-        Task *executeCommand(const char *name)
+        Task *executeCommand(const char* name)
         {
-            Task *task;
+            Task* task;
 
             if (CommandThunk thunk = findCommand(name))
             {

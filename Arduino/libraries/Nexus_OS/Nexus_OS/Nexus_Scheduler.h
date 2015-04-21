@@ -17,14 +17,14 @@ namespace Nexus {
 
       public:
 
-        void addCoro(Coro *coro)
+        void addCoro(Coro* coro)
         {
             coro->_next = _coros;
 
             _coros = coro;
         }
 
-        void addTask(Task *task, Task *parent = NULL)
+        void addTask(Task* task, Task* parent = NULL)
         {
             task->_parent = parent;
             task->_next = _tasks;
@@ -47,9 +47,9 @@ namespace Nexus {
         //         _tasks = newTask;
         // }
 
-        Task *getTasks() { return _tasks; }
+        Task* getTasks() { return _tasks; }
 
-        void send(Task *task, const Message& message)
+        void send(Task* task, const Message& message)
         {
             if (!task->_sleep)
             {
@@ -59,16 +59,16 @@ namespace Nexus {
 
         void tick(uint32_t msecs)
         {
-            for (Coro *prev = NULL, *coro = _coros; coro != NULL; coro = coro->getNext())
+            for (Coro* prev = NULL, * coro = _coros; coro != NULL; coro = coro->getNext())
             {
-                coro->_run(coro, Message(Event()));
+                coro->_run(coro, Message(0));
             }
 
-            for (Task *prev = NULL, *task = _tasks; task != NULL; task = task->getNext())
+            for (Task* prev = NULL, * task = _tasks; task != NULL; task = task->getNext())
             {
                 if (msecs >= task->_timeout)
                 {
-                    task->_run(task, Message(Event()));
+                    task->_run(task, Message(0));
                 }
 
                 if (task->_context == NULL)
@@ -86,8 +86,8 @@ namespace Nexus {
 
       private:
 
-        Coro *_coros;
-        Task *_tasks;
+        Coro* _coros;
+        Task* _tasks;
 
     };
 

@@ -10,11 +10,11 @@ class Client : public Task {
 
   public:
 
-    Client() : Task(&TaskHelper<Client>::run, F("Client")) { }
+    Client() : Task(TaskHelper<Client>::run, F("Client")) { }
 
     void run(const Message& message)
     {
-        KeyEvent keyEvent;
+        option<KeyEvent> keyEvent;
 
         task_enter;
 
@@ -26,14 +26,14 @@ class Client : public Task {
 
             if (keyEvent = message.get<KeyEvent>())
             {
-                switch (keyEvent.key)
+                switch (keyEvent->key)
                 {
                     case KeyEvent::KeyEscape: getStream().print(F("<ESC>")); break;
                     case KeyEvent::KeyUp:     getStream().print(F("<UP>")); break;
                     case KeyEvent::KeyDown:   getStream().print(F("<DOWN>")); break;
                     case KeyEvent::KeyLeft:   getStream().print(F("<LEFT>")); break;
                     case KeyEvent::KeyRight:  getStream().print(F("<RIGHT>")); break;
-                    default:                  getStream().print((char)keyEvent.key);
+                    default:                  getStream().print((char)keyEvent->key);
                 }
             }
         }
@@ -47,11 +47,11 @@ Terminal console(Serial);
 
 namespace {
 
-    void stream(Coro *coro, const Message& message)
+    void stream(Coro* coro, const Message& message)
     {
         if (Serial.available() > 0)
         {
-            Scheduler.send(&console, Message(StreamEvent(Serial)));
+            console.send(StreamEvent::Create(Serial));
         }
     }
 

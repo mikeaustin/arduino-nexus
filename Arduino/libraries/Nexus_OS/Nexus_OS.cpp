@@ -10,8 +10,6 @@ namespace Nexus {
 
     class Scheduler Scheduler;
 
-    Event Message::None = Event(false);
-
     const char Commands::help_name[] PROGMEM = "help";
     const char Commands::reset_name[] PROGMEM = "reset";
     const char Commands::tasks_name[] PROGMEM = "tasks";

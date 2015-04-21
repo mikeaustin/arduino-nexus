@@ -13,28 +13,9 @@ namespace Nexus {
     template<typename Type>
     struct TypeInfo {
 
-        static void *GetType() { return reinterpret_cast<void *>(&GetType); }
+        static const uint16_t ID = 0;
 
-    };
-
-    /**
-
-    An encapsulated option data type, passed to tasks via messages
-
-    */
-    
-    class Event {
-
-      public:
-
-        Event(bool valid = true) : _valid(valid) { }
-
-        operator bool() const
-        {
-            return _valid;
-        }
-
-        bool _valid;
+        static void* GetType() { return reinterpret_cast<void*>(&GetType); }
 
     };
 
@@ -48,27 +29,27 @@ namespace Nexus {
 
       public:
 
-        static Event None;
-
         template<typename DataType>
-        Message(const DataType& event) : _event(event), _type(TypeInfo<DataType>::GetType())
+        Message(const DataType & event)
+         : _data(&event), _type(TypeInfo<DataType>::GetType()), _id(TypeInfo<DataType>::ID)
         { }
 
         template<typename DataType>
-        const DataType& get() const
+        option<DataType> get() const
         {
-            if (TypeInfo<DataType>::GetType() == _type)
+            if (TypeInfo<DataType>::ID == _id || (TypeInfo<DataType>::ID == 0 && TypeInfo<DataType>::GetType() == _type))
             {
-                return static_cast<const DataType&>(_event);
+                    return option<DataType>(*static_cast<const DataType*>(_data));
             }
 
-            return static_cast<const DataType&>(None);
+            return option<DataType>();
         }
 
       private:
 
-        const Event&  _event;
-        const void   *_type;
+        const void*    _data;
+        const void*    _type;
+        const uint16_t _id;
 
     };
 

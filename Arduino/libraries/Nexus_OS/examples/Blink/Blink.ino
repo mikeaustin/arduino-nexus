@@ -10,7 +10,7 @@ class Blink : public Task {
 
   public:
 
-    Blink() : Task(&TaskHelper<Blink>::run, F("Blink")) { }
+    Blink() : Task(TaskHelper<Blink>::run, F("Blink")) { }
 
     void run(const Message& message)
     {

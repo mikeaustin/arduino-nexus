@@ -10,7 +10,7 @@ class Blink : public Task {
 
   public:
 
-    Blink() : Task(&TaskHelper<Blink>::run, F("Blink")) { }
+    Blink() : Task(TaskHelper<Blink>::run, F("Blink")) { }
 
     void run(const Message& message)
     {
@@ -49,13 +49,13 @@ Blink blink;
 
 namespace {
 
-    void stream(Coro *coro, const Message& message)
+    void stream(Coro* coro, const Message& message)
     {
         while (Serial.available() > 0)
         {
             Serial.read();
 
-            Scheduler.send(&blink, Message(Event()));
+            blink.send(StreamEvent::Create(Serial));
         }
     }
 

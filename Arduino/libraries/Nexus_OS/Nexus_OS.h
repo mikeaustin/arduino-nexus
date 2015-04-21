@@ -11,8 +11,8 @@ const T pgm_ptr(const U& addr)
 }
 
 #include "Nexus_OS/Nexus_Symbol.h"
-#include "Nexus_OS/Nexus_Message.h"
 #include "Nexus_OS/Nexus_Tuple.h"
+#include "Nexus_OS/Nexus_Message.h"
 #include "Nexus_OS/Nexus_Task.h"
 #include "Nexus_OS/Nexus_Scheduler.h"
 #include "Nexus_OS/Nexus_Terminal.h"

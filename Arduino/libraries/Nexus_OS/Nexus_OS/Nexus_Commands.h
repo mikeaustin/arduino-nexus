@@ -9,29 +9,35 @@
 
 namespace Nexus {
 
-    inline Stream& operator <<(Stream& stream, symbol symbol) {
+    inline Stream& operator <<(Stream& stream, symbol symbol)
+    {
         stream.print(symbol._string);
 
         return stream;
     }
 
-    inline Stream& operator <<(Stream& stream, const void *pointer) {
+    inline Stream& operator <<(Stream& stream, const void* pointer)
+    {
         return stream.print((intptr_t)pointer), stream;
     }
 
-    inline Stream& operator <<(Stream& stream, Stream& (*func)(Stream&)) {
+    inline Stream& operator <<(Stream& stream, Stream& (*func)(Stream&))
+    {
         return func(stream);
     }
     
-    inline Stream& endl(Stream& stream) {
+    inline Stream& endl(Stream& stream)
+    {
         stream.println(F(""));
 
         return stream;
     }
 
     struct Column {
+
         symbol  sym;
         uint8_t width;
+
     };
 
     inline Stream& operator <<(Stream& stream, const Column& column)
@@ -57,15 +63,15 @@ namespace Nexus {
         static const char reset_name[] PROGMEM;
         static const char tasks_name[] PROGMEM;
 
-        static Task *help(Task *parent)
+        static Task* help(Task* parent)
         {
             Stream& stream = parent->getStream();
 
-            Shell *shell = static_cast<Shell *>(parent);
+            Shell* shell = static_cast<Shell*>(parent);
 
-            for (const Command *command = shell->getCommands(); pgm_ptr<void *>(command->name) != NULL; ++command)
+            for (const Command* command = shell->getCommands(); pgm_ptr<void*>(command->name) != NULL; ++command)
             {
-                const symbol name = pgm_ptr<const __FlashStringHelper *>(command->name);
+                const symbol name = pgm_ptr<const __FlashStringHelper*>(command->name);
 
                 stream << name << endl;
             }
@@ -73,7 +79,7 @@ namespace Nexus {
             return NULL;
         }
 
-        static Task *reset(Task *parent)
+        static Task* reset(Task* parent)
         {
             void (*reset)() = 0;
 
@@ -82,11 +88,11 @@ namespace Nexus {
             return NULL;
         }
 
-        static Task *tasks(Task *parent)
+        static Task* tasks(Task* parent)
         {
             Stream& stream = parent->getStream();
 
-            for (Task *task = Scheduler.getTasks(); task != NULL; task = task->getNext())
+            for (Task* task = Scheduler.getTasks(); task != NULL; task = task->getNext())
             {
                 stream << column(task->getName(), 16) << task << endl;
             }

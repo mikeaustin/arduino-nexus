@@ -6,14 +6,14 @@
 
 namespace Nexus {
     
-    // void Task::send(const Message& message)
-    // {
-    //     Scheduler.send(this, message);
-    // }
+    void Task::send(const Message& message)
+    {
+        Scheduler.send(this, message);
+    }
 
     Terminal *Task::getTerminal()
     {
-        for (Task *task = Scheduler.getTasks(); task != NULL; task = task->getParent())
+        for (Task *task = this; task != NULL; task = task->getParent())
         {
             if (task->getParent() == NULL) return static_cast<Terminal *>(task);
         }

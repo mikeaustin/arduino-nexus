@@ -27,7 +27,7 @@ namespace Nexus {
             }
         }
 
-        uint8_t write(uint16_t offset, const uint8_t *value, size_t count)
+        uint8_t write(uint16_t offset, const uint8_t* value, size_t count)
         {
             _fram.writeEnable(true);
             _fram.write(offset, value, count);
@@ -36,7 +36,7 @@ namespace Nexus {
             return count;
         }
 
-        uint8_t read(uint16_t offset, uint8_t *value, size_t count)
+        uint8_t read(uint16_t offset, uint8_t* value, size_t count)
         {
             _fram.read(offset, value, count);
 
@@ -67,23 +67,23 @@ namespace Nexus {
         void format();
 
         template<typename Value>
-        void put(const char *key, const Value& value);
+        void put(const char* key, const Value& value);
 
         template<typename Value>
-        Value get(const char *key);
+        Value get(const char* key);
 
       protected:
 
         void setLastOffset(uint16_t lastOffset)
         {
-            _driver.write(Size - 2, reinterpret_cast<uint8_t *>(&lastOffset), 2);
+            _driver.write(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
         }
 
         uint16_t getLastOffset()
         {
             uint16_t lastOffset;
 
-            _driver.read(Size - 2, reinterpret_cast<uint8_t *>(&lastOffset), 2);
+            _driver.read(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
 
             return lastOffset;
         }

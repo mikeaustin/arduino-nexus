@@ -27,7 +27,7 @@
 #define task_exit         coro_exit
 
 // Yield before sending a message, so that previous sends can be processed
-#define task_send(task, message) task_yield(); Scheduler.send(task, message)
+// #define task_send(task, message) task_yield(); Scheduler.send(task, message)
 
 namespace Nexus {
 
@@ -43,7 +43,7 @@ namespace Nexus {
 
         friend class Scheduler;
 
-        typedef void (*TickFunc)(Coro *coro, const Message& message);
+        typedef void (*TickFunc)(Coro* coro, const Message& message);
 
         Coro(TickFunc run) : _run(run), _context(NULL), _next(NULL) { }
 
@@ -53,9 +53,9 @@ namespace Nexus {
 
         TickFunc _run;
 
-        void *_context;
-        Coro *_next;
-        Coro *_parent;
+        void* _context;
+        Coro* _next;
+        Coro* _parent;
 
     };
 
@@ -68,9 +68,9 @@ namespace Nexus {
     template<typename T>
     struct TaskHelper {
 
-        static void run(Coro *task, const Message& message)
+        static void run(Coro* task, const Message& message)
         {
-            static_cast<T *>(task)->run(message);
+            static_cast<T*>(task)->run(message);
         }
 
     };
@@ -93,18 +93,19 @@ namespace Nexus {
           _name(name), _timeout(0), _sleep(false)
         { }
 
-        //void send(const Message& message);
+        void send(const Message & message);
 
-        Task* getNext() { return static_cast<Task *>(Coro::getNext()); }
-        Task* getParent() { return static_cast<Task *>(Coro::getNext()); }
+        Task* getNext() { return static_cast<Task*>(Coro::getNext()); }
+        Task* getParent() { return static_cast<Task*>(Coro::getNext()); }
 
         symbol getName() { return _name; }
 
-        Terminal *getTerminal();
+        Terminal* getTerminal();
         Stream& getStream();
 
         template<typename T1, typename T2>
-        void println(T1 arg1, T2 arg2) {
+        void println(T1 arg1, T2 arg2)
+        {
             getStream().print(arg1);
             getStream().print(arg2);
             getStream().print('\n');
