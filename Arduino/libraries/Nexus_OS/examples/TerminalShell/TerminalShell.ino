@@ -6,23 +6,39 @@
 
 using namespace Nexus;
 
-namespace {
+class Blink : public Task {
 
-    const char ledOn_name[] PROGMEM = "led on";
-    const char ledOff_name[] PROGMEM = "led off";
+  public:
 
-    Task* ledOn(Task* parent)
+    Blink() : Task(TaskHelper<Blink>::run, F("Blink")) { }
+
+    void run(const Message& message)
     {
-        digitalWrite(13, HIGH);
-        parent->getStream().println(F("LED enabled."));
+        task_enter;
 
-        return NULL;
+        pinMode(13, OUTPUT);
+
+        for (;;)
+        {
+            digitalWrite(13, HIGH);
+            task_sleep(500);
+
+            digitalWrite(13, LOW);
+            task_sleep(500);
+        }
+
+        task_exit;
     }
 
-    Task* ledOff(Task* parent)
+};
+
+namespace {
+
+    const char blink_name[] PROGMEM = "blink";
+
+    Task* blink(Task* parent)
     {
-        digitalWrite(13, LOW);
-        parent->getStream().println(F("LED disabled."));
+        Scheduler.addTask(new Blink());
 
         return NULL;
     }
@@ -34,8 +50,7 @@ const Command commands[] PROGMEM =
     Commands::help_name, Commands::help,
     Commands::reset_name, Commands::reset,
     Commands::tasks_name, Commands::tasks,
-    ledOn_name, ledOn,
-    ledOff_name, ledOff,
+    blink_name, blink,
     NULL, NULL
 };
 

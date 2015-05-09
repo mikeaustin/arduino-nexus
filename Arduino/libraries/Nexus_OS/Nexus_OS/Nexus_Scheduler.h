@@ -12,6 +12,17 @@ namespace Nexus {
     Coordinates adding, removing and scheduling coros and tasks
 
     */
+
+    struct TimeoutEvent {
+
+        static TimeoutEvent Create()
+        {
+            TimeoutEvent event = { };
+
+            return event;
+        }
+
+    };
     
     class Scheduler {
 
@@ -59,16 +70,18 @@ namespace Nexus {
 
         void tick(uint32_t msecs)
         {
+            Message message = DistObject<TimeoutEvent>::Archive(TimeoutEvent::Create());
+
             for (Coro* prev = NULL, * coro = _coros; coro != NULL; coro = coro->getNext())
             {
-                coro->_run(coro, Message(0));
+                coro->_run(coro, message);
             }
 
             for (Task* prev = NULL, * task = _tasks; task != NULL; task = task->getNext())
             {
                 if (msecs >= task->_timeout)
                 {
-                    task->_run(task, Message(0));
+                    task->_run(task, message);
                 }
 
                 if (task->_context == NULL)

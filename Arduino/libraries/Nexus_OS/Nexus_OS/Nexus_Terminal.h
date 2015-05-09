@@ -15,13 +15,6 @@ namespace Nexus {
 
     };
 
-    template<>
-    struct TypeInfo<StreamEvent> : public TypeInfo<void> {
-
-        static const uint16_t ID = 1;
-
-    };
-
     struct KeyEvent {
 
         enum Key
@@ -36,13 +29,6 @@ namespace Nexus {
         }
 
         int key;
-
-    };
-
-    template<>
-    struct TypeInfo<KeyEvent> : public TypeInfo<void> {
-
-        static const uint16_t ID = 2;
 
     };
 
@@ -110,7 +96,7 @@ namespace Nexus {
                 }
                 else key = c;
 
-                if (_task) _task->send(Message(KeyEvent::Create(key)));
+                if (_task) _task->send(KeyEvent::Create(key));
             }
 
             task_exit;
@@ -124,3 +110,17 @@ namespace Nexus {
     };
 
 }
+
+template<>
+struct TypeInfo<Nexus::KeyEvent> : public TypeInfo<void> {
+
+    static const uint16_t ID = 2;
+
+};
+
+template<>
+struct TypeInfo<Nexus::StreamEvent> : public TypeInfo<void> {
+
+    static const uint16_t ID = 1;
+
+};
