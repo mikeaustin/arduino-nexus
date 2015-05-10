@@ -98,7 +98,8 @@ namespace Nexus {
         template<typename DataType>
         void send(const DataType& value)
         {
-            Message message = DistObject<DataType>::Archive(value);
+            //Message message = DistObject<DataType>::Archive(value);
+            Message message = TypeInfo<DataType>::Archive(value);
 
             send(message);
         }

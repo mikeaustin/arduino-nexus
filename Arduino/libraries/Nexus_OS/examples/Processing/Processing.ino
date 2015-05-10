@@ -8,15 +8,12 @@ using namespace Nexus;
 
 struct DrawPoint {
 
-    static DrawPoint Create(uint16_t x, uint16_t y)
-    {
-        DrawPoint data = { x, y };
+    DrawPoint(uint16_t x, uint16_t y)
+     : x(x), y(y)
+    { }
 
-        return data;
-    }
-
-    uint16_t x;
-    uint16_t y;
+    const uint16_t x;
+    const uint16_t y;
 
 };
 
@@ -26,12 +23,9 @@ const void* TypeInfo<DrawPoint>::GetType() { return (void*) 1; }
 
 struct DrawString {
 
-    static DrawString Create(const char* string)
-    {
-        DrawString data = { string };
-
-        return data;
-    }
+    DrawString(const char* string)
+     : string(string)
+    { }
 
     const char* string;
 
@@ -41,16 +35,10 @@ template<>
 const void* TypeInfo<DrawString>::GetType() { return (void*) 2; }
 
 template<>
-struct DistObject<DrawString> {
-
-    static Nexus::Message Archive(const DrawString& value)
-    {
-        Message message(TypeInfo<DrawString>::GetType(), value.string, strlen(value.string));
-
-        return message;
-    }
-
-};
+const Bundle TypeInfo<DrawString>::Archive(const DrawString& data)
+{
+    return Bundle(GetType(), data.string, strlen(data.string));
+}
 
 
 class Proxy : public Task {
@@ -78,6 +66,7 @@ class Proxy : public Task {
 
 };
 
+
 class Draw : public Task {
 
   public:
@@ -94,29 +83,15 @@ class Draw : public Task {
         
         for (;;)
         {
-            // DrawPoint drawPoint = { random(1024), random(768) };
-
-            // stream.write(10);
-            // stream.write(TypeInfo<DrawPoint>::ID);
-            // stream.write(sizeof (DrawPoint));
-            // stream.write((char*) &drawPoint, sizeof (DrawPoint));
-
-            windowServer.send(DrawPoint::Create(random(1024), random(768)));
-
-            //DrawPoint data[] = { 10, 20, 30, 40 };
-
-            // stream.write(10);
-            // stream.write(TypeInfo<DrawString>::ID);
-            // stream.write(strlen("Nexus OS"));
-            // stream.write("Nexus OS", strlen("Nexus OS"));
-
-            windowServer.send(DrawString::Create("Nexus OS"));
+            windowServer.send(DrawPoint(random(1024), random(768)));
+            windowServer.send(DrawString("Nexus OS"));
         }
 
         task_exit;
     }
 
 };
+
 
 void setup()
 {

@@ -70,7 +70,7 @@ namespace Nexus {
 
         void tick(uint32_t msecs)
         {
-            Message message = DistObject<TimeoutEvent>::Archive(TimeoutEvent::Create());
+            Message message = TypeInfo<TimeoutEvent>::Archive(TimeoutEvent::Create());
 
             for (Coro* prev = NULL, * coro = _coros; coro != NULL; coro = coro->getNext())
             {

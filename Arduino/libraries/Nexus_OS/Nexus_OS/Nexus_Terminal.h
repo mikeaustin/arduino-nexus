@@ -110,17 +110,3 @@ namespace Nexus {
     };
 
 }
-
-template<>
-struct TypeInfo<Nexus::KeyEvent> : public TypeInfo<void> {
-
-    static const uint16_t ID = 2;
-
-};
-
-template<>
-struct TypeInfo<Nexus::StreamEvent> : public TypeInfo<void> {
-
-    static const uint16_t ID = 1;
-
-};
