@@ -27,9 +27,12 @@ namespace Nexus {
         //operator const char *() const { return _string; }
         operator const __FlashStringHelper*() const { return _string; }
 
-        uint8_t size() const { return strlen_P((const char*)_string); }
+        uint8_t size() const { return strlen_P(reinterpret_cast<const char*>(_string)); }
 
-        bool operator ==(const char* string) const { return strcmp_P(string, (const char*)_string) == 0; }
+        bool operator ==(const char* string) const
+        {
+            return strcmp_P(string, reinterpret_cast<const char*>(_string)) == 0;
+        }
 
       private:
 

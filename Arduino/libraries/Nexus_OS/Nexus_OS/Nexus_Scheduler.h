@@ -65,8 +65,6 @@ namespace Nexus {
 
         void tick(uint32_t msecs)
         {
-            //TimeoutEvent event;
-            //Message message = Message(TypeInfo<TimeoutEvent>::GetType(), (void*) &event, &TypeInfo<TimeoutEvent>::Archive);
             Message message = Message(TimeoutEvent());
 
             for (Coro* prev = NULL, * coro = _coros; coro != NULL; coro = coro->getNext())

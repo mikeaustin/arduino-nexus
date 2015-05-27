@@ -4,14 +4,12 @@
 
 namespace Nexus {
 
-    typedef Task* (*CommandThunk)(Task* parent);
+    typedef Task* (*CommandFunc)(Task* parent);
 
     struct Command {
 
-        //Command(const char * name, CommandThunk command) : name(name), command(command) { }
-
-        const char*  name;
-        CommandThunk command;
+        const char* name;
+        CommandFunc command;
 
     };
 
@@ -142,16 +140,16 @@ namespace Nexus {
             }
         }
 
-        CommandThunk findCommand(const char* name)
+        CommandFunc findCommand(const char* name)
         {
             for (const Command* command = _commands; pgm_ptr<void*>(command->name) != NULL; ++command)
             {
                 //const char *commandName = (const char *)pgm_read_word(&command->name);
                 const char* commandName = pgm_ptr<const char*>(command->name);
                 const symbol commandName2 = pgm_ptr<const __FlashStringHelper*>(command->name);
-                const CommandThunk thunk = (CommandThunk)pgm_read_word(&command->command);
+                const CommandFunc func = (CommandFunc) pgm_read_word(&command->command);
 
-                if (commandName2 == name) return thunk;
+                if (commandName2 == name) return func;
                 //if (strcmp_P(name, commandName) == 0) return thunk;
                 //if (strcmp_P(name, command->name) == 0) return command->command;
                 //if (command->name == name) return command->command;
@@ -164,9 +162,9 @@ namespace Nexus {
         {
             Task* task;
 
-            if (CommandThunk thunk = findCommand(name))
+            if (CommandFunc func = findCommand(name))
             {
-                task = thunk(this);
+                task = func(this);
             }
             else getStream().println(F("Command not found"));
 
@@ -178,7 +176,7 @@ namespace Nexus {
       private:
 
         const Command* _commands;
-        Buffer   _buffer;
+        Buffer         _buffer;
 
     };
 

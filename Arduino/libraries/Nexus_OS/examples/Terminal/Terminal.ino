@@ -33,7 +33,7 @@ class Client : public Task {
                     case KeyEvent::KeyDown:   getStream().print(F("<DOWN>")); break;
                     case KeyEvent::KeyLeft:   getStream().print(F("<LEFT>")); break;
                     case KeyEvent::KeyRight:  getStream().print(F("<RIGHT>")); break;
-                    default:                  getStream().print((char)keyEvent->key);
+                    default:                  getStream().print((char) keyEvent->key);
                 }
             }
         }

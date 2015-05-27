@@ -18,7 +18,7 @@ namespace Nexus {
 
     inline Stream& operator <<(Stream& stream, const void* pointer)
     {
-        return stream.print((intptr_t)pointer), stream;
+        return stream.print(reinterpret_cast<intptr_t>(pointer)), stream;
     }
 
     inline Stream& operator <<(Stream& stream, Stream& (*func)(Stream&))
@@ -45,7 +45,9 @@ namespace Nexus {
         stream.print(column.sym);
 
         for (int i = 0; i < column.width - column.sym.size(); ++i)
+        {
             stream.print(' ');
+        }
 
         return stream;
     }

@@ -19,12 +19,12 @@ struct DrawPoint {
 };
 
 template<>
-const void* TypeInfo<DrawPoint>::GetType() { return reinterpret_cast<const void*>(1); }
+const void* TypeInfo<DrawPoint>::GetType() { return (const void*) 1; }
 
 template<>
 void TypeInfo<DrawPoint>::Archive(const void* data_, Stream& stream)
 {
-    const DrawPoint* data = static_cast<const DrawPoint*>(data_);
+    const DrawPoint* data = (const DrawPoint*) data_;
 
     stream.write(4);
 
@@ -47,12 +47,12 @@ struct DrawString {
 };
 
 template<>
-const void* TypeInfo<DrawString>::GetType() { return reinterpret_cast<const void*>(2); }
+const void* TypeInfo<DrawString>::GetType() { return (const void*) 2; }
 
 template<>
 void TypeInfo<DrawString>::Archive(const void* data_, Stream& stream)
 {
-    const DrawString* data = static_cast<const DrawString*>(data_);
+    const DrawString* data = (const DrawString*) data_;
 
     stream.write(4 + strlen(data->string));
 

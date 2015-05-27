@@ -10,7 +10,7 @@ namespace Nexus {
          : stream(stream)
         { }
 
-        StreamEvent() : stream(*(Stream*)0) { }
+        StreamEvent() : stream(*reinterpret_cast<Stream*>(0)) { }
 
         Stream& stream;
 

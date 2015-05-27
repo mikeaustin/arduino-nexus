@@ -113,9 +113,9 @@ namespace Nexus {
 
       protected:
 
-        const symbol _name;
-        uint32_t     _timeout : 31;
-        bool         _sleep : 1;
+        symbol   _name;
+        uint32_t _timeout : 31;
+        bool     _sleep : 1;
 
     };
 

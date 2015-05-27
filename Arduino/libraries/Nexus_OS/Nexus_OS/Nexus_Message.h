@@ -31,7 +31,7 @@ namespace Nexus {
 
         template<typename DataType>
         Message(const DataType& data)
-         : _type(TypeInfo<DataType>::GetType()), _data((void*) &data), _archive(&TypeInfo<DataType>::Archive)
+         : _type(TypeInfo<DataType>::GetType()), _data(&data), _archive(&TypeInfo<DataType>::Archive)
         { }
 
         template<typename DataType>
@@ -50,7 +50,7 @@ namespace Nexus {
 
         void archive(Stream& stream) const
         {
-            stream.write((uint16_t) _type);
+            stream.write(reinterpret_cast<intptr_t>(_type));
 
             if (_archive) _archive(_data, stream);
         }
