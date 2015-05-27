@@ -6,12 +6,13 @@ namespace Nexus {
     
     struct StreamEvent {
 
-        static StreamEvent Create(Stream& stream)
-        {
-            StreamEvent event = { &stream }; return event;
-        }
+        StreamEvent(Stream& stream)
+         : stream(stream)
+        { }
 
-        Stream* stream;
+        StreamEvent() : stream(*(Stream*)0) { }
+
+        Stream& stream;
 
     };
 
@@ -23,10 +24,11 @@ namespace Nexus {
             KeyUp = 30, KeyDown = 31, KeyLeft = 28, KeyRight = 29
         };
 
-        static KeyEvent Create(int key = 0)
-        {
-            KeyEvent event = { key }; return event;
-        }
+        KeyEvent(int key)
+         : key(key)
+        { }
+
+        KeyEvent() { }
 
         int key;
 
@@ -96,7 +98,7 @@ namespace Nexus {
                 }
                 else key = c;
 
-                if (_task) _task->send(KeyEvent::Create(key));
+                if (_task) _task->send(KeyEvent(key));
             }
 
             task_exit;

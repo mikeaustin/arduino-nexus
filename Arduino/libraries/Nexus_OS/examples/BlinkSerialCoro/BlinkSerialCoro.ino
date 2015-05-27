@@ -55,7 +55,7 @@ namespace {
         {
             Serial.read();
 
-            blink.send(StreamEvent::Create(Serial));
+            blink.send(StreamEvent(Serial));
         }
     }
 

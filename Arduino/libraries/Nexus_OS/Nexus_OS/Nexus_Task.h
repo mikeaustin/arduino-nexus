@@ -95,15 +95,6 @@ namespace Nexus {
 
         void send(const Message& message);
 
-        template<typename DataType>
-        void send(const DataType& value)
-        {
-            //Message message = DistObject<DataType>::Archive(value);
-            Message message = TypeInfo<DataType>::Archive(value);
-
-            send(message);
-        }
-
         Task* getNext() { return static_cast<Task*>(Coro::getNext()); }
         Task* getParent() { return static_cast<Task*>(Coro::getNext()); }
 

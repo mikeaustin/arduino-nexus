@@ -1,5 +1,6 @@
+
 //
-// Blink.ino
+// Processing.ino
 //
 
 #include <Nexus_OS.h>
@@ -18,26 +19,47 @@ struct DrawPoint {
 };
 
 template<>
-const void* TypeInfo<DrawPoint>::GetType() { return (void*) 1; }
+const void* TypeInfo<DrawPoint>::GetType() { return reinterpret_cast<const void*>(1); }
+
+template<>
+void TypeInfo<DrawPoint>::Archive(const void* data_, Stream& stream)
+{
+    const DrawPoint* data = static_cast<const DrawPoint*>(data_);
+
+    stream.write(4);
+
+    stream.write((char*) &data->x, 2);
+    stream.write((char*) &data->y, 2);
+}
 
 
 struct DrawString {
 
-    DrawString(const char* string)
-     : string(string)
+    DrawString(uint16_t x, uint16_t y, const char* string)
+     : x(x), y(y), string(string)
     { }
+
+    const uint16_t x;
+    const uint16_t y;
 
     const char* string;
 
 };
 
 template<>
-const void* TypeInfo<DrawString>::GetType() { return (void*) 2; }
+const void* TypeInfo<DrawString>::GetType() { return reinterpret_cast<const void*>(2); }
 
 template<>
-const Bundle TypeInfo<DrawString>::Archive(const DrawString& data)
+void TypeInfo<DrawString>::Archive(const void* data_, Stream& stream)
 {
-    return Bundle(GetType(), data.string, strlen(data.string));
+    const DrawString* data = static_cast<const DrawString*>(data_);
+
+    stream.write(4 + strlen(data->string));
+
+    stream.write((char*) &data->x, 2);
+    stream.write((char*) &data->y, 2);
+
+    stream.write(data->string, strlen(data->string));
 }
 
 
@@ -55,14 +77,13 @@ class Proxy : public Task {
         Stream& stream = Serial;
 
         stream.write(_port);
-        stream.write((uint16_t) message.getType());
-        stream.write(message.getSize());
-        stream.write((char*) message.getData(), message.getSize());
+
+        message.archive(stream);
     }
 
   private:
 
-    uint16_t _port;
+    uint8_t _port;
 
 };
 
@@ -80,15 +101,23 @@ class Draw : public Task {
         Stream& stream = Serial;
 
         task_enter;
-        
-        for (;;)
+
+        for (i = 0;; i++)
         {
             windowServer.send(DrawPoint(random(1024), random(768)));
-            windowServer.send(DrawString("Nexus OS"));
+
+            if (i % 1000 == 0)
+            {
+                windowServer.send(DrawString(random(1024), random(768), "Nexus OS"));
+            }
+
+            task_yield();
         }
 
         task_exit;
     }
+
+    int i;
 
 };
 

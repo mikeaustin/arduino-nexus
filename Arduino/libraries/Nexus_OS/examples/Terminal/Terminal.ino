@@ -51,7 +51,7 @@ namespace {
     {
         if (Serial.available() > 0)
         {
-            console.send(StreamEvent::Create(Serial));
+            console.send(StreamEvent(Serial));
         }
     }
 

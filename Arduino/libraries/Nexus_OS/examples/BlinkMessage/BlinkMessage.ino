@@ -36,8 +36,9 @@ class Blink : public Task, TaskHelper<Blink> {
 
   public:
 
-    Blink(Task* led) : Task(TaskHelper<Blink>::run, F("Blink")),
-      led(led)
+    Blink(Task* led)
+     : Task(TaskHelper<Blink>::run, F("Blink")),
+       led(led)
     { }
 
     void run(const Message& message)

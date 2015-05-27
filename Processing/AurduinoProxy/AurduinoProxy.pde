@@ -15,8 +15,8 @@ HashMap<Integer, IServer> proxies = new HashMap<Integer, IServer>();
 
 class WindowServer implements IServer {
 
-    static final int DrawPoint = 1;
-    static final int DrawChar = 2;
+    static final int DrawPoint  = 1;
+    static final int DrawString = 2;
   
     void handleMessage(int selector, char[] buffer, int bufferSize)
     {
@@ -30,14 +30,17 @@ class WindowServer implements IServer {
             redraw();
         }
         
-        if (selector == DrawChar) {
-            String string = new String(buffer, 0, bufferSize);
+        if (selector == DrawString) {
+            int x = buffer[0] << 0 | buffer[1] << 8;
+            int y = buffer[2] << 0 | buffer[3] << 8;
+            
+            String string = new String(buffer, 4, bufferSize - 4);
             
             fill(255);
-            rect(10, 10, textWidth(string) + 1, textAscent() + textDescent());
+            //rect(x, y, textWidth(string) + 1, textAscent() + textDescent());
             
-            fill(0x00);
-            text(string, 10, 10 + textAscent());
+            fill(0);
+            text(string, x, y + textAscent());
             redraw();
         }
     }
@@ -86,7 +89,7 @@ void serialEvent(Serial serial)
     }
     else if (state == 1) {
         selector = serial.read();
-        
+
         state = 2;
     }
     else if (state == 2) {

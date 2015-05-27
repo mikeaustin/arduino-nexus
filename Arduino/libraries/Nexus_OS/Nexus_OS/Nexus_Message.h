@@ -8,27 +8,12 @@ Proviedes run time type information, used by messages and events
 
 */
 
-struct Bundle {
-
-    Bundle(const void* type, const void* data, const uint8_t size)
-     : data(data), type(type), size(size)
-    { }
-
-    const void*   data;
-    const void*   type;
-    const uint8_t size;
-
-};
-
 template<typename Type>
 struct TypeInfo {
 
     static const void* GetType() { return reinterpret_cast<const void*>(&GetType); }
 
-    static const Bundle Archive(const Type& data)
-    {
-        return Bundle(GetType(), &data, sizeof(Type));
-    }
+    static void Archive(const void* data, Stream& stream) { }
 
 };
 
@@ -44,33 +29,38 @@ namespace Nexus {
 
       public:
 
-        // Message(const void* type, const void* data, size_t size)
-        //  : _data(data), _type(type), _size(size), _bundle(Bundle(type, data, size))
-        // { }
-
-        template<typename Type>
-        Message(const Type& bundle)
-         : _bundle(bundle)
+        template<typename DataType>
+        Message(const DataType& data)
+         : _type(TypeInfo<DataType>::GetType()), _data((void*) &data), _archive(&TypeInfo<DataType>::Archive)
         { }
 
         template<typename DataType>
         option<DataType> get() const
         {
-            if (TypeInfo<DataType>::GetType() == _bundle.type)
+            if (TypeInfo<DataType>::GetType() == _type)
             {
-                return option<DataType>(*static_cast<const DataType*>(_bundle.data));
+                return option<DataType>(*static_cast<const DataType*>(_data));
             }
 
             return option<DataType>();
         }
 
-        const void* getData() const { return _bundle.data; }
-        const void* getType() const { return _bundle.type; }
-        uint8_t     getSize() const { return _bundle.size; }
+        const void* getType() const { return _type; }
+        const void* getData() const { return _data; }
+
+        void archive(Stream& stream) const
+        {
+            stream.write((uint16_t) _type);
+
+            if (_archive) _archive(_data, stream);
+        }
 
       private:
 
-        const Bundle _bundle;
+        const void* _type;
+        const void* _data;
+
+        void (*_archive)(const void* data, Stream& stream);
 
     };
 

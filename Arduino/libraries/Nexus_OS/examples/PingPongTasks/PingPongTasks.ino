@@ -8,10 +8,11 @@ using namespace Nexus;
 
 struct SquareData {
 
-    static SquareData Create(Task* sender, int value)
-    {
-        SquareData data = { sender, value };  return data;
-    }
+    SquareData(Task* sender, int value)
+     : sender(sender), value(value)
+    { }
+
+    SquareData() { }
 
     Task* sender;
     int   value;
@@ -38,7 +39,7 @@ class Pong : public Task {
             {
                 task_yield(); // Allow sender to wait()
 
-                data->sender->send(SquareData::Create(this, data->value * data->value));
+                data->sender->send(SquareData(this, data->value * data->value));
             }
         }
 
@@ -69,7 +70,7 @@ class Ping : public Task, TaskHelper<Ping> {
         {
             task_yield(); // Allow sender to wait()
 
-            pong->send(SquareData::Create(this, i));
+            pong->send(SquareData(this, i));
 
             task_wait();
 

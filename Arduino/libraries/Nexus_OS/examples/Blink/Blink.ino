@@ -32,9 +32,11 @@ class Blink : public Task {
 
 };
 
+Blink blink;
+
 void setup()
 {
-    Scheduler.addTask(new Blink());
+    Scheduler.addTask(&blink);
 }
 
 void loop()
