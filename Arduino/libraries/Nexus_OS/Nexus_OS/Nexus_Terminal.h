@@ -87,10 +87,10 @@ namespace Nexus {
 
                             switch (c)
                             {
-                                case 'A': key = KeyEvent::KeyUp; break;
-                                case 'B': key = KeyEvent::KeyDown; break;
-                                case 'C': key = KeyEvent::KeyRight; break;
-                                case 'D': key = KeyEvent::KeyLeft; break;
+                                break; case 'A': key = KeyEvent::KeyUp;
+                                break; case 'B': key = KeyEvent::KeyDown;
+                                break; case 'C': key = KeyEvent::KeyRight;
+                                break; case 'D': key = KeyEvent::KeyLeft;
                             }
                         }
                     }

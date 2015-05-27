@@ -102,6 +102,17 @@ namespace Nexus {
                             if (_buffer.size() > 0)
                             {
                                 task = executeCommand(_buffer.value());
+
+                                if (task)
+                                {
+                                    getTerminal()->setForegroundTask(task);
+
+                                    task_wait();
+
+                                    getTerminal()->setForegroundTask(this);
+                                }
+
+                                _buffer.reset();
                             }
 
                             getStream().print(F("] "));
@@ -160,15 +171,12 @@ namespace Nexus {
 
         Task *executeCommand(const char* name)
         {
-            Task* task;
-
             if (CommandFunc func = findCommand(name))
             {
-                task = func(this);
+                return func(this);
             }
-            else getStream().println(F("Command not found"));
 
-            _buffer.reset();
+            getStream().println(F("Command not found"));
 
             return NULL;
         }

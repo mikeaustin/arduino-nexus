@@ -13,6 +13,24 @@ namespace Nexus {
 
     };
 
+    struct TaskEvent {
+
+        enum Type
+        {
+            ChildExited = 1
+        };
+
+        TaskEvent(Task* task, Type type)
+         : task(task), type(type)
+        { }
+
+        TaskEvent() { }
+
+        Task* task;
+        Type  type;
+
+    };
+
     /**
 
     Coordinates adding, removing and scheduling coros and tasks
@@ -81,6 +99,11 @@ namespace Nexus {
 
                 if (task->_context == NULL)
                 {
+                    if (task->getParent())
+                    {
+                        task->getParent()->send(TaskEvent(task, TaskEvent::ChildExited));
+                    }
+
                     if (prev)
                         prev->_next = task->_next;
                     else

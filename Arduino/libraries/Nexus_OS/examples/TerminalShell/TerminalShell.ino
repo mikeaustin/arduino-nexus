@@ -18,7 +18,7 @@ class Blink : public Task {
 
         pinMode(13, OUTPUT);
 
-        for (;;)
+        for (i = 0; i < 5; i++)
         {
             digitalWrite(13, HIGH);
             task_sleep(500);
@@ -30,6 +30,8 @@ class Blink : public Task {
         task_exit;
     }
 
+    int i;
+
 };
 
 namespace {
@@ -38,9 +40,11 @@ namespace {
 
     Task* blink(Task* parent)
     {
-        Scheduler.addTask(new Blink());
+        Blink *blink = new Blink();
 
-        return NULL;
+        Scheduler.addTask(blink, parent);
+
+        return blink;
     }
 
 }
