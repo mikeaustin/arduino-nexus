@@ -52,7 +52,7 @@ namespace {
 const Command commands[] PROGMEM =
 {
     Commands::help_name, Commands::help,
-    Commands::reset_name, Commands::reset,
+    Commands::info_name, Commands::info,
     Commands::tasks_name, Commands::tasks,
     blink_name, blink,
     NULL, NULL
@@ -94,5 +94,7 @@ void setup()
 
 void loop()
 {
+    int v; availableMemory = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+
     Scheduler.tick(millis());
 }

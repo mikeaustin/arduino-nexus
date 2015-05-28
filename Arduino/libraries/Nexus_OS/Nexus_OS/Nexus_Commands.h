@@ -11,10 +11,34 @@ namespace Nexus {
 
     inline Stream& operator <<(Stream& stream, symbol symbol)
     {
-        stream.print(symbol._string);
-
-        return stream;
+        return stream.print(symbol._string), stream;
     }
+
+    inline Stream& operator <<(Stream& stream, const __FlashStringHelper* string)
+    {
+        return stream.print(string), stream;
+    }
+
+    inline Stream& operator <<(Stream& stream, char value)
+    {
+        return stream.print(value), stream;
+    }
+
+    inline Stream& operator <<(Stream& stream, int value)
+    {
+        return stream.print(value), stream;
+    }
+
+    inline Stream& operator <<(Stream& stream, unsigned long value)
+    {
+        return stream.print(value), stream;
+    }
+
+    // template<typename DataType>
+    // inline Stream& operator <<(Stream& stream, DataType value)
+    // {
+    //     return stream.print(value), stream;
+    // }
 
     inline Stream& operator <<(Stream& stream, const void* pointer)
     {
@@ -62,7 +86,7 @@ namespace Nexus {
     struct Commands {
 
         static const char help_name[] PROGMEM;
-        static const char reset_name[] PROGMEM;
+        static const char info_name[] PROGMEM;
         static const char tasks_name[] PROGMEM;
 
         static Task* help(Task* parent)
@@ -81,11 +105,12 @@ namespace Nexus {
             return NULL;
         }
 
-        static Task* reset(Task* parent)
+        static Task* info(Task* parent)
         {
-            void (*reset)() = 0;
+            Stream& stream = parent->getStream();
 
-            reset();
+            stream << F("Up for ") << millis() / 1000 << F(" seconds.") << endl;
+            stream << availableMemory << F(" bytes free.") << endl;
 
             return NULL;
         }

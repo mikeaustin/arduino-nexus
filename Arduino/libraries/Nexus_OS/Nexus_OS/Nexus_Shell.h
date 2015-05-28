@@ -109,6 +109,11 @@ namespace Nexus {
 
                                     task_wait();
 
+                                    if (option<TaskEvent> event = message.get<TaskEvent>())
+                                    {
+                                        delete event->task;
+                                    }
+
                                     getTerminal()->setForegroundTask(this);
                                 }
 

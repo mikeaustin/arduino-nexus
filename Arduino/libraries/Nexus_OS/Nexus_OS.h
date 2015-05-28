@@ -10,6 +10,9 @@ const T pgm_ptr(const U& addr)
     return (const T)pgm_read_ptr(&addr);
 }
 
+extern int __heap_start, *__brkval;
+extern int availableMemory;
+
 #include "Nexus_OS/Nexus_Symbol.h"
 #include "Nexus_OS/Nexus_Tuple.h"
 #include "Nexus_OS/Nexus_Message.h"
