@@ -40,6 +40,11 @@ namespace Nexus {
 
     };
 
+    inline Stream& operator <<(Stream& stream, symbol symbol)
+    {
+        return stream.print(symbol._string), stream;
+    }
+
 }
 
 #endif
