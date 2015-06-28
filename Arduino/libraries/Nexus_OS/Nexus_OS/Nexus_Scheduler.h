@@ -83,6 +83,8 @@ namespace Nexus {
 
         void tick(uint32_t msecs)
         {
+            int v; availableMemory = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+
             Message message = Message(TimeoutEvent());
 
             for (Coro* prev = NULL, * coro = _coros; coro != NULL; coro = coro->getNext())

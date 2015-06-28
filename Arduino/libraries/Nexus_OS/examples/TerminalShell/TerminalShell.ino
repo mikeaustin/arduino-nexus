@@ -85,7 +85,7 @@ void setup()
     Serial.println(F("Type 'help' for a list of commands"));
 
     Scheduler.addCoro(&messenger);
-
+    
     Scheduler.addTask(&console);
     Scheduler.addTask(&shell, &console);
 
@@ -94,7 +94,5 @@ void setup()
 
 void loop()
 {
-    int v; availableMemory = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-
     Scheduler.tick(millis());
 }
