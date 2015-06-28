@@ -28,12 +28,14 @@ class Client : public Task {
             {
                 switch (keyEvent->key)
                 {
-                    case KeyEvent::KeyEscape: getStream().print(F("<ESC>")); break;
-                    case KeyEvent::KeyUp:     getStream().print(F("<UP>")); break;
-                    case KeyEvent::KeyDown:   getStream().print(F("<DOWN>")); break;
-                    case KeyEvent::KeyLeft:   getStream().print(F("<LEFT>")); break;
-                    case KeyEvent::KeyRight:  getStream().print(F("<RIGHT>")); break;
-                    default:                  getStream().print((char) keyEvent->key);
+                    break; case KeyEvent::KeyEnter:  getStream().print(F("\r\n"));
+                    break; case KeyEvent::KeyDelete: getStream().print(F("\b \b"));
+                    break; case KeyEvent::KeyEscape: getStream().print(F("<ESC>"));
+                    break; case KeyEvent::KeyUp:     getStream().print(F("<UP>"));
+                    break; case KeyEvent::KeyDown:   getStream().print(F("<DOWN>"));
+                    break; case KeyEvent::KeyLeft:   getStream().print(F("<LEFT>"));
+                    break; case KeyEvent::KeyRight:  getStream().print(F("<RIGHT>"));
+                    break; default:                  getStream().print(keyEvent->key);
                 }
             }
         }
@@ -44,6 +46,7 @@ class Client : public Task {
 };
 
 Terminal console(Serial);
+Client client = Client();
 
 namespace {
 
@@ -58,7 +61,6 @@ namespace {
 }
 
 Coro messenger = Coro(&stream);
-Client client = Client();
 
 void setup()
 {
