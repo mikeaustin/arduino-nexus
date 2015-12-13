@@ -51,8 +51,8 @@ namespace {
 
 const Command commands[] PROGMEM =
 {
-    Commands::help_name, Commands::help,
-    Commands::info_name, Commands::info,
+    Commands::help_name,  Commands::help,
+    Commands::info_name,  Commands::info,
     Commands::tasks_name, Commands::tasks,
     blink_name, blink,
     NULL, NULL
@@ -75,6 +75,33 @@ namespace {
 
 Coro messenger = Coro(&stream);
 
+class CPU : public Task {
+
+  public:
+
+    CPU() : Task(TaskHelper<CPU>::run, F("CPU")) { }
+
+    void run(const Message& message)
+    {
+        task_enter;
+
+        for (;;)
+        {
+            task_sleep(1);
+            //delay(1);
+            //for (volatile int i = 0; i < 300; i++) { }
+            //task_yield();
+        }
+
+        task_exit;
+    }
+
+    int i;
+
+};
+
+CPU cpu, cpu2, cpu3;
+
 void setup()
 {
     pinMode(13, OUTPUT);
@@ -88,6 +115,10 @@ void setup()
     
     Scheduler.addTask(&console);
     Scheduler.addTask(&shell, &console);
+
+    //Scheduler.addTask(&cpu);
+    //Scheduler.addTask(&cpu2);
+    //Scheduler.addTask(&cpu3);
 
     console.setForegroundTask(&shell);
 }

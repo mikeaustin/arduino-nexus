@@ -9,8 +9,8 @@
 
 namespace Nexus {
 
-    #include <SPI.h>
-    #include <Adafruit_FRAM_SPI.h>
+    // #include <SPI.h>
+    // #include <Adafruit_FRAM_SPI.h>
 
     template<int CS_Pin>
     class FRAM_Driver {
@@ -19,7 +19,7 @@ namespace Nexus {
 
         FRAM_Driver() : _fram(CS_Pin) { }
 
-        void initialize()
+        void setup()
         {
             if (!_fram.begin())
             {
@@ -76,14 +76,14 @@ namespace Nexus {
 
         void setLastOffset(uint16_t lastOffset)
         {
-            _driver.write(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
+            getDriver().write(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
         }
 
         uint16_t getLastOffset()
         {
             uint16_t lastOffset;
 
-            _driver.read(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
+            getDriver().read(Size - 2, reinterpret_cast<uint8_t*>(&lastOffset), 2);
 
             return lastOffset;
         }

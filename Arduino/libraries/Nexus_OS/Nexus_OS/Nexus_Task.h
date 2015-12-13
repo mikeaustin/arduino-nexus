@@ -45,9 +45,10 @@ namespace Nexus {
 
         typedef void (*TickFunc)(Coro* coro, const Message& message);
 
-        Coro(TickFunc run) : _run(run), _context(NULL), _next(NULL) { }
+        Coro(TickFunc run) : _run(run), _context(NULL), _next(NULL), _parent(NULL) { }
 
-        Coro* getNext() { return _next; }
+        Coro* getNext() const { return _next; }
+        Coro* getParent() const { return _parent; }
 
       protected:
 
@@ -95,10 +96,11 @@ namespace Nexus {
 
         void send(const Message& message);
 
-        Task* getNext() { return static_cast<Task*>(Coro::getNext()); }
-        Task* getParent() { return static_cast<Task*>(Coro::getNext()); }
+        Task* getNext() const { return static_cast<Task*>(Coro::getNext()); }
+        Task* getParent() const { return static_cast<Task*>(Coro::getParent()); }
 
-        symbol getName() { return _name; }
+        symbol getName() const { return _name; }
+        uintptr_t getID() const { return reinterpret_cast<uintptr_t>(this); }
 
         Terminal* getTerminal();
         Stream& getStream();

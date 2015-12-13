@@ -13,6 +13,7 @@ namespace Nexus {
 
     };
 
+    template<int Size>
     class Buffer {
 
       public:
@@ -43,7 +44,7 @@ namespace Nexus {
             return false;
         }
 
-        const char *value()
+        const char* value()
         {
             _buffer[_index] = '\0';
 
@@ -60,10 +61,15 @@ namespace Nexus {
             _index = 0;
         }
 
+        char& operator [](size_t index)
+        {
+            return _buffer[index];
+        }
+
       private:
 
-        char    _buffer[30 + 1];
-        uint8_t _index;
+        char _buffer[Size + 1];
+        int  _index;
 
     };
 
@@ -174,7 +180,7 @@ namespace Nexus {
             return NULL;
         }
 
-        Task *executeCommand(const char* name)
+        Task* executeCommand(const char* name)
         {
             if (CommandFunc func = findCommand(name))
             {
@@ -189,7 +195,7 @@ namespace Nexus {
       private:
 
         const Command* _commands;
-        Buffer         _buffer;
+        Buffer<30>     _buffer;
 
     };
 

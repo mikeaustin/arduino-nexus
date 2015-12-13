@@ -63,6 +63,7 @@ namespace Nexus {
 
         operator bool() const { return _ptr != NULL; }
         const T *operator ->() const { return &_value; }
+        T operator *() { return _value; }
 
       private:
 

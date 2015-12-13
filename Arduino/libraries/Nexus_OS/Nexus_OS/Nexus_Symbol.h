@@ -19,12 +19,10 @@ namespace Nexus {
 
         friend Stream& operator <<(Stream& stream, symbol symbol);
 
-        symbol(const __FlashStringHelper* string) :
-          //_string(reinterpret_cast<const char *>(string))
+        symbol(const __FlashStringHelper* string = NULL) :
           _string(string)
         { }
 
-        //operator const char *() const { return _string; }
         operator const __FlashStringHelper*() const { return _string; }
 
         uint8_t size() const { return strlen_P(reinterpret_cast<const char*>(_string)); }

@@ -30,7 +30,7 @@ namespace Nexus {
 
         KeyEvent() { }
 
-        int key;
+        char key;
 
     };
 
@@ -59,46 +59,49 @@ namespace Nexus {
             {
                 task_wait();
 
-                c = _stream.read();
-
-                if (c == 10) continue;
-
-                if (c == 13)
+                if (message.get<StreamEvent>())
                 {
-                    key = KeyEvent::KeyEnter;
-                }
-                else if (c == 8 || c == 127)
-                {
-                    key = KeyEvent::KeyDelete;
-                }
-                else if (c == 27)
-                {
-                    task_wait4(10);
+                    c = _stream.read();
 
-                    if (message.get<StreamEvent>())
+                    if (c == 10) continue;
+
+                    if (c == 13)
                     {
-                        c = _stream.read();
+                        key = KeyEvent::KeyEnter;
+                    }
+                    else if (c == 8 || c == 127)
+                    {
+                        key = KeyEvent::KeyDelete;
+                    }
+                    else if (c == 27)
+                    {
+                        task_wait4(10);
 
-                        if (c == '[')
+                        if (message.get<StreamEvent>())
                         {
-                            task_wait();
-
                             c = _stream.read();
 
-                            switch (c)
+                            if (c == '[')
                             {
-                                break; case 'A': key = KeyEvent::KeyUp;
-                                break; case 'B': key = KeyEvent::KeyDown;
-                                break; case 'C': key = KeyEvent::KeyRight;
-                                break; case 'D': key = KeyEvent::KeyLeft;
+                                task_wait();
+
+                                c = _stream.read();
+
+                                switch (c)
+                                {
+                                    break; case 'A': key = KeyEvent::KeyUp;
+                                    break; case 'B': key = KeyEvent::KeyDown;
+                                    break; case 'C': key = KeyEvent::KeyRight;
+                                    break; case 'D': key = KeyEvent::KeyLeft;
+                                }
                             }
                         }
+                        else key = 27;
                     }
-                    else key = 27;
-                }
-                else key = c;
+                    else key = c;
 
-                if (_task) _task->send(KeyEvent(key));
+                    if (_task) _task->send(KeyEvent(key));
+                }
             }
 
             task_exit;
@@ -112,3 +115,24 @@ namespace Nexus {
     };
 
 }
+
+    // struct Messenger : public Coro {
+
+    //     Messenger(Task* task, Stream& stream) : Coro(&run),
+    //       task(task), stream(stream)
+    //     { }
+
+    //     Task*   task;
+    //     Stream& stream;
+
+    //     static void run(Coro* coro_, const Message& message)
+    //     {
+    //         Messenger* coro = (Messenger*) coro_;
+
+    //         if (coro->stream.available() > 0)
+    //         {
+    //             coro->task->send(StreamEvent(coro->stream));
+    //         }
+    //     }
+
+    // };

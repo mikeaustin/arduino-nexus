@@ -9,7 +9,7 @@ namespace Nexus {
     {
         if (!_ready)
         {
-            _driver.initialize();
+            _driver.setup();
 
             _ready = true;
         }
@@ -20,8 +20,6 @@ namespace Nexus {
     template<typename Driver, int Size>
     void Storage<Driver, Size>::format()
     {
-        Driver& driver = getDriver();
-
         setLastOffset(0);
     }
 

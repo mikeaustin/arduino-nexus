@@ -37,6 +37,7 @@ namespace Nexus {
 
             stream << F("Up for ") << millis() / 1000 << F(" seconds.") << endl;
             stream << availableMemory << F(" bytes free.") << endl;
+            stream << F("System load: ") << Scheduler.getLoad() << F("%") << endl;
 
             return NULL;
         }
@@ -48,7 +49,7 @@ namespace Nexus {
             for (Task* task = Scheduler.getTasks(); task != NULL; task = task->getNext())
             {
                 //stream << column(task->getName(), 16) << (void*) task << endl;
-                parent->getTerminal()->send(PrintEvent(task->getName(), task->getID()));
+                stream << column((int) task, 5) << column(task->getName(), 16) << endl;
             }
 
             return NULL;

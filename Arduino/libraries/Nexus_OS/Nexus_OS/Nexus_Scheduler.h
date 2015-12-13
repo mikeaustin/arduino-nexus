@@ -41,6 +41,8 @@ namespace Nexus {
 
       public:
 
+        Scheduler() : _idle(0), _total(0), _time(0) { }
+
         void addCoro(Coro* coro)
         {
             coro->_next = _coros;
@@ -72,6 +74,7 @@ namespace Nexus {
         // }
 
         Task* getTasks() { return _tasks; }
+        unsigned getLoad() { return _load; }
 
         void send(Task* task, const Message& message)
         {
@@ -92,12 +95,17 @@ namespace Nexus {
                 coro->_run(coro, message);
             }
 
+            int count = 0;
+
             for (Task* prev = NULL, * task = _tasks; task != NULL; task = task->getNext())
             {
                 if (msecs >= task->_timeout)
                 {
                     task->_run(task, message);
                 }
+                else _idle += 1;
+
+                _total += 1;
 
                 if (task->_context == NULL)
                 {
@@ -114,6 +122,16 @@ namespace Nexus {
                     if (prev) task = prev;
                 }
                 else prev = task;
+
+                count += 1;
+            }
+
+            if (millis() > _time)
+            {
+                _load = (100 - (_idle * 100 / _total)) * count;
+                _idle = _total = 0;
+
+                _time = millis() + 1000;
             }
         }
 
@@ -121,6 +139,10 @@ namespace Nexus {
 
         Coro* _coros;
         Task* _tasks;
+        unsigned _load;
+        unsigned long _idle;
+        unsigned long _total;
+        unsigned long _time;
 
     };
 
